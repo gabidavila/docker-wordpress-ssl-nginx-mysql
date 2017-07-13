@@ -33,12 +33,15 @@ SERVER_NAME=${SERVER_NAME:-example.com}
 # The prefix "DB" is just the "alias" of the DB server.
 # ----------------------------------------------------------
 
-DB_HOSTNAME=${DB_HOSTNAME:-$DB_PORT_3306_TCP_ADDR}
-DB_DATABASE=${DB_DATABASE:-$DB_ENV_MYSQL_DATABASE}
-DB_USER=${DB_USER:-$DB_ENV_MYSQL_USER}
-DB_PASSWORD=${DB_PASSWORD:-$DB_ENV_MYSQL_PASSWORD}
+#mysql has to be started this way as it doesn't work to call from /etc/init.d
+/usr/bin/mysqld_safe &
+sleep 10s
 
-
+WP_DATABASE="wordpress"
+DB_PASSWORD=`pwgen -c -n -1 12`
+WP_PASSWORD=`pwgen -c -n -1 12`
+echo $DB_PASSWORD > /mysql-root-pw.txt
+echo $WP_PASSWORD > /wordpress-db-pw.txt
 
 # ===============================================================================
 # Modify `wp-config.php` File
@@ -80,10 +83,9 @@ if [ -f /usr/share/nginx/www/wp-config.php ]; then
 fi
 
 # Search and replace the **string**.
-sed -e "s/database_name_here/$DB_DATABASE/
-s/username_here/$DB_USER/
-s/password_here/$DB_PASSWORD/
-s/localhost/$DB_HOSTNAME/
+sed -e "s/database_name_here/$WP_DATABASE/
+s/username_here/$WP_DATABASE/
+s/password_here/$WP_PASSWORD/
 /'AUTH_KEY'/s/put your unique phrase here/`pwgen -c -n -1 65`/
 /'SECURE_AUTH_KEY'/s/put your unique phrase here/`pwgen -c -n -1 65`/
 /'LOGGED_IN_KEY'/s/put your unique phrase here/`pwgen -c -n -1 65`/
@@ -97,7 +99,10 @@ s/localhost/$DB_HOSTNAME/
 # Change `user:group` for `wp-config.php`.
 chown www-data:www-data /usr/share/nginx/www/wp-config.php
 
-
+mysqladmin -u root password $DB_PASSWORD
+  mysql -uroot -p$DB_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+  mysql -uroot -p$DB_PASSWORD -e "CREATE DATABASE wordpress; GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost' IDENTIFIED BY '$WP_PASSWORD'; FLUSH PRIVILEGES;"
+  killall mysqld
 
 # ===============================================================================
 # Update `HOST_NAME` to other places

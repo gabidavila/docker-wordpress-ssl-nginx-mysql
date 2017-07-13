@@ -26,8 +26,8 @@ FROM ubuntu:14.04
 # File Author / Maintainer
 MAINTAINER Lei SHI <foxshee@gmail.com>
 
-# Default HTTP and HTTPS ports
-EXPOSE 80 443
+# Default HTTP and HTTPS and MySQL ports
+EXPOSE 80 443 3306
 
 
 # ===============================================================================
@@ -60,6 +60,7 @@ RUN apt-get update && apt-get -y upgrade
 # - python-setuptools - for `easy_install`
 #
 RUN apt-get install -y mysql-client \
+            mysql-server \
 						php5-fpm \
 						php5-mysql \
 						pwgen \
@@ -106,10 +107,15 @@ RUN add-apt-repository ppa:rtcamp/nginx && \
 	apt-get remove nginx* && \
 	apt-get install -y nginx-custom
 
-
 ############################################################
 # Configurations
 #
+
+# ----------------------------------------------------------
+# MySQL Config
+# ----------------------------------------------------------
+
+RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 # ----------------------------------------------------------
 # Nginx Config
@@ -229,5 +235,5 @@ COPY bash/wp-install-plugins.sh /addon/wp-install-plugins.sh
 #
 
 # Mount the volumns
-VOLUME ["/usr/share/nginx/www", "/var/log"]
+VOLUME ["/var/lib/mysql", "/usr/share/nginx/www", "/var/log"]
 
