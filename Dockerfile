@@ -101,10 +101,10 @@ RUN apt-get -y install software-properties-common \
 # @link https://easyengine.io/wordpress-nginx/tutorials/single-site/fastcgi-cache-with-purging/
 # ----------------------------------------------------------
 
-RUN add-apt-repository ppa:rtcamp/nginx && \
+RUN add-apt-repository ppa:nginx/stable && \
 	apt-get update && \
 	apt-get remove nginx* && \
-	apt-get install -y nginx-custom
+	apt-get install -y nginx
 
 ############################################################
 # Configurations
