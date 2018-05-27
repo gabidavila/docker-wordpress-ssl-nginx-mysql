@@ -59,8 +59,8 @@ RUN apt-get update && apt-get -y upgrade
 # - pwgen - Open-Source Password Generator
 # - python-setuptools - for `easy_install`
 #
-RUN apt-get install -y mysql-client \
-            mysql-server \
+RUN apt-get install -y mysql-client-5.6 \
+            mysql-server-5.6 \
 						php5-fpm \
 						php5-mysql \
 						pwgen \
