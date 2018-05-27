@@ -21,7 +21,7 @@
 # ===============================================================================
 
 # Set the base image to Ubuntu
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 # File Author / Maintainer
 MAINTAINER Lei SHI <foxshee@gmail.com>
@@ -61,8 +61,8 @@ RUN apt-get update && apt-get -y upgrade
 #
 RUN apt-get install -y mysql-client \
             mysql-server \
-						php5-fpm \
-						php5-mysql \
+						php7.0-fpm \
+						php7.0-mysql \
 						pwgen \
 						python-setuptools \
 						curl \
@@ -71,22 +71,22 @@ RUN apt-get install -y mysql-client \
 
 
 # **Wordpress** Dependencies
-RUN apt-get install -y php5-curl \
-						php5-gd \
-						php5-intl \
+RUN apt-get install -y php7.0-curl \
+						php7.0-gd \
+						php7.0-intl \
 						php-pear \
-						php5-imagick \
-						php5-imap \
-						php5-mcrypt \
-						php5-memcache \
-						php5-ming \
-						php5-ps \
-						php5-pspell \
-						php5-recode \
-						php5-sqlite \
-						php5-tidy \
-						php5-xmlrpc \
-						php5-xsl
+						php-imagick \
+						php7.0-imap \
+						php7.0-mcrypt \
+						php-memcache \
+						php-ming \
+						php7.0-ps \
+						php7.0-pspell \
+						php7.0-recode \
+						php7.0-sqlite \
+						php7.0-tidy \
+						php7.0-xmlrpc \
+						php7.0-xsl
 
 ### ---- FIX -----
 # Fix 'add-apt-repository: not found' in Ubuntu 14.04 LTS
@@ -142,26 +142,26 @@ COPY  config/nginx-restrictions.conf /etc/nginx/restrictions.conf
 # ----------------------------------------------------------
 
 RUN sed -i -e "s/;cgi.fix_pathinfo\s*=\s*1/cgi.fix_pathinfo = 0/g; s/expose_php\s*=\s*On/expose_php = Off/g" \
-/etc/php5/fpm/php.ini
-RUN sed -i -e "s/expose_php\s*=\s*On/expose_php = Off/g" /etc/php5/fpm/php.ini
+/etc/php7/fpm/php.ini
+RUN sed -i -e "s/expose_php\s*=\s*On/expose_php = Off/g" /etc/php7/fpm/php.ini
 RUN sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g; s/post_max_size\s*=\s*8M/post_max_size = 100M/g" \
-/etc/php5/fpm/php.ini
-#RUN sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" /etc/php5/fpm/php.ini
+/etc/php7/fpm/php.ini
+#RUN sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" /etc/php7/fpm/php.ini
 
-RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
+RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php7/fpm/php-fpm.conf
 
-RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g; s/listen\s*=\s*\/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g; s/;listen.allowed_clients\s*=\s*127.0.0.1/listen.allowed_clients = 127.0.0.1/g" \
-/etc/php5/fpm/pool.d/www.conf
-#RUN sed -i -e "s/listen\s*=\s*\/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g" /etc/php5/fpm/pool.d/www.conf
-#RUN sed -i -e "s/;listen.allowed_clients\s*=\s*127.0.0.1/listen.allowed_clients = 127.0.0.1/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g; s/listen\s*=\s*\/var\/run\/php7.0-fpm.sock/listen = 127.0.0.1:9000/g; s/;listen.allowed_clients\s*=\s*127.0.0.1/listen.allowed_clients = 127.0.0.1/g" \
+/etc/php7/fpm/pool.d/www.conf
+#RUN sed -i -e "s/listen\s*=\s*\/var\/run\/php7.0-fpm.sock/listen = 127.0.0.1:9000/g" /etc/php7/fpm/pool.d/www.conf
+#RUN sed -i -e "s/;listen.allowed_clients\s*=\s*127.0.0.1/listen.allowed_clients = 127.0.0.1/g" /etc/php7/fpm/pool.d/www.conf
 
 
 # ----------------------------------------------------------
 # Opcode Config
 # ----------------------------------------------------------
 
-RUN sed -i -e"s/^;opcache.enable\s*=\s*0/opcache.enable = 1/; s/^;opcache.max_accelerated_files\s*=\s*2000/opcache.max_accelerated_files = 4000/" /etc/php5/fpm/php.ini
-#RUN sed -i -e"s/^;opcache.max_accelerated_files\s*=\s*2000/opcache.max_accelerated_files = 4000/" /etc/php5/fpm/php.ini
+RUN sed -i -e"s/^;opcache.enable\s*=\s*0/opcache.enable = 1/; s/^;opcache.max_accelerated_files\s*=\s*2000/opcache.max_accelerated_files = 4000/" /etc/php7/fpm/php.ini
+#RUN sed -i -e"s/^;opcache.max_accelerated_files\s*=\s*2000/opcache.max_accelerated_files = 4000/" /etc/php7/fpm/php.ini
 
 
 # ===============================================================================
