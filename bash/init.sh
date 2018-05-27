@@ -101,7 +101,7 @@ chown www-data:www-data /usr/share/nginx/www/wp-config.php
 
 mysqladmin -u root password $DB_PASSWORD
   mysql -uroot -p$DB_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
-  mysql -uroot -p$DB_PASSWORD -e "CREATE DATABASE wordpress; GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost' IDENTIFIED BY '$WP_PASSWORD'; FLUSH PRIVILEGES;"
+  mysql -uroot -p$DB_PASSWORD -e "CREATE DATABASE wordpress; GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'%' IDENTIFIED BY '$WP_PASSWORD';GRANT REPLICATION SLAVE ON *.* TO 'replication'@'%' IDENTIFIED BY '$WP_PASSWORD'; FLUSH PRIVILEGES;"
   killall mysqld
 
 # ===============================================================================
