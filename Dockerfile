@@ -79,7 +79,6 @@ RUN apt-get install -y php7.0-curl \
 						php7.0-imap \
 						php7.0-mcrypt \
 						php-memcache \
-						php-ming \
 						php7.0-ps \
 						php7.0-pspell \
 						php7.0-recode \
